@@ -32,6 +32,8 @@ for d in designs:
     live = None
     if d["kind"] == "tokens":
         live = f"live/{n}/index.html"
+    elif d.get("path", "").startswith("gallery/"):
+        live = d["path"][len("gallery/"):]
     elif d.get("path", "").endswith((".html", ".pdf")):
         live = "../" + d["path"]
     elif d.get("url"):
