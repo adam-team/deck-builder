@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Конструктор структуры презентации</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--text:#171717;--muted:#6b6b6b;--line:#e4e2dc;--brand:#C8102E;--ok:#1f9d61;--soft:#fff0f1}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#111;--card:#1c1c1e;--text:#f1f1f1;--muted:#a3a3a3;--line:#2f2f31;--soft:#2a1416}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Manrope,system-ui,sans-serif;font-size:15px}
+button,select{font:inherit;color:inherit;cursor:pointer}
+.top{padding:28px 20px 8px;max-width:1280px;margin:0 auto}
+.top h1{margin:0 0 6px;font-size:clamp(24px,3.5vw,34px);letter-spacing:-.02em}
+.top p{margin:0;color:var(--muted);max-width:780px}
+.steps{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.steps span{background:var(--card);border:1px solid var(--line);border-radius:30px;padding:6px 12px;font-weight:700;font-size:13px;color:var(--muted)}
+.steps span.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.lay{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:20px;max-width:1280px;margin:0 auto;padding:16px 20px 60px}
+@media (max-width:900px){.lay{grid-template-columns:1fr}}
+.box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:16px}
+.box h2{margin:0 0 4px;font-size:18px}
+.hint{margin:0 0 14px;color:var(--muted);font-size:14px}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.opt{text-align:left;background:var(--bg);border:2px solid transparent;border-radius:14px;padding:12px 14px;font-weight:700;line-height:1.3}
+.opt small{display:block;font-weight:500;color:var(--muted);margin-top:4px;font-size:12.5px}
+.opt.on{border-color:var(--brand);background:var(--soft)}
+.list{display:grid;gap:8px}
+.it{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:12px;padding:8px 10px}
+.it .n{width:26px;height:26px;border-radius:8px;background:var(--text);color:var(--bg);display:grid;place-items:center;font-weight:800;font-size:12px;flex:none}
+.it .t{flex:1;min-width:0}.it .t b{display:block}.it .t small{color:var(--muted)}
+.it button{border:1px solid var(--line);background:var(--card);border-radius:8px;width:30px;height:30px;flex:none}
+.add{display:flex;gap:8px;margin-top:12px}
+.add select{flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg)}
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:800;background:var(--text);color:var(--bg);text-decoration:none;display:inline-block}
+.btn.sec{background:var(--bg);color:var(--text);border:1px solid var(--line)}
+textarea,input[type=text]{width:100%;font:inherit;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+.sticky{position:sticky;top:16px}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--tw,110px),1fr));gap:10px;max-height:520px;overflow:auto}
+.th{background:#fff;border-radius:8px;border:1px solid #ddd;position:relative;overflow:hidden;padding:8%;display:flex;flex-direction:column;gap:6%;color:#222}
+.th.dk{background:#0E0D0D;color:#eee;border-color:#0E0D0D}.th.rd{background:var(--brand);color:#fff;border-color:var(--brand)}
+.th i{display:block;height:7%;min-height:4px;border-radius:3px;background:currentColor;opacity:.25}
+.th i.h{opacity:.85;width:70%;height:10%}.th i.w5{width:50%}.th i.a{background:var(--brand);opacity:1;width:40%}
+.th .g{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5%;flex:1}.th .g span{background:currentColor;opacity:.15;border-radius:4px}
+.th em{position:absolute;right:5px;bottom:4px;font:700 9px monospace;opacity:.5;font-style:normal}
+.out{white-space:pre-wrap;font-size:13.5px;background:var(--bg);border-radius:12px;padding:14px;max-height:240px;overflow:auto;margin:0}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--ok);color:#fff;font-weight:800;padding:10px 18px;border-radius:10px;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>Конструктор структуры презентации</h1>
+  <p>Собери, какие слайды будут в презентации и в каком порядке. Справа сразу видно все слайды в выбранном формате. В конце нажми «Скопировать для агента» и отправь в чат.</p>
+  <div class="steps"><span>1. Тема</span><span class="on">2. Структура</span><span>3. Дизайн и анимация</span><span>4. Тексты</span><span>5. Сборка</span><span>6. PDF и ссылка</span></div>
+</div>
+<div class="lay">
+  <div>
+    <div class="box">
+      <h2>У тебя уже есть структура?</h2>
+      <p class="hint">План слайдов, старая презентация, текст урока или сценарий вебинара? Вставь ниже. Если нет, выбери задачу: структуру предложим сами.</p>
+      <div class="opts" id="have">
+        <button class="opt on" data-v="no">Нет, давай соберём вместе<small>выберу задачу и слайды</small></button>
+        <button class="opt" data-v="yes">Да, у меня есть план<small>вставлю текст, файл или ссылку</small></button>
+      </div>
+      <textarea id="own" rows="5" placeholder="Например: обложка, кто я, 3 ошибки новичков, кейс с цифрами, тарифы, призыв. Или вставь текст урока целиком." style="display:none;margin-top:12px"></textarea>
+    </div>
+    <div class="box"><h2>Для чего презентация</h2><p class="hint">Слайды подставятся автоматически, потом можно менять, удалять и добавлять.</p><div class="opts" id="presets"></div></div>
+    <div class="box"><h2>Формат</h2><p class="hint">Квадрат подходит урокам курса, 16:9 экрану и Zoom, 4:5 каруселям в Instagram, 9:16 сторис.</p><div class="opts" id="formats"></div></div>
+    <div class="box">
+      <h2>Слайды по порядку</h2>
+      <p class="hint">Стрелки меняют порядок, × удаляет слайд. Один тип можно повторять, например несколько слайдов «Шаги».</p>
+      <div class="list" id="list"></div>
+      <div class="add"><select id="addType"></select><button class="btn" id="addBtn">+ Добавить</button></div>
+    </div>
+    <div class="box"><h2>Тема и цель</h2><p class="hint">О чём презентация и что зритель должен сделать в конце.</p>
+      <input type="text" id="name" placeholder="Тема, например: Как собрать сайт за вечер">
+      <input type="text" id="goal" placeholder="Цель, например: записаться на курс, написать кодовое слово" style="margin-top:8px"></div>
+  </div>
+  <div><div class="sticky">
+    <div class="box"><h2>Все слайды</h2><p class="hint">Схема без дизайна: дизайн и 3D-переходы выберешь на следующем шаге в Дизайн-теке.</p><div class="thumbs" id="thumbs"></div></div>
+    <div class="box"><h2>Готовая структура</h2><pre class="out" id="out"></pre>
+      <div class="actions"><button class="btn" onclick="copyOut()">Скопировать для агента</button><button class="btn sec" onclick="download()">Скачать structure.json</button>
+      <a class="btn sec" href="../gallery/index.html">Дальше: дизайн и анимация →</a></div></div>
+  </div></div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="presets.js"></script>
+<script>
+var P = window.PRESETS, S = {have:"no", preset:"lesson", format:"1:1", slides:[]};
+function store(v){ try{ if(v===undefined) return JSON.parse(localStorage.getItem("db-structure")||"null"); localStorage.setItem("db-structure", JSON.stringify(v)) }catch(e){ return null } }
+function esc(s){ return String(s||"").replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]}) }
+function preset(id){ S.preset=id; S.slides=P.presets[id].slides.slice(); S.format=P.presets[id].format }
+function opts(){
+  document.getElementById("presets").innerHTML = Object.keys(P.presets).map(function(k){ var p=P.presets[k]; return '<button class="opt'+(S.preset===k?" on":"")+'" data-v="'+k+'">'+esc(p.name)+'<small>'+p.slides.length+' слайдов · '+p.format+'</small></button>' }).join("");
+  document.getElementById("formats").innerHTML = Object.keys(P.formats).map(function(k){ var f=P.formats[k]; return '<button class="opt'+(S.format===k?" on":"")+'" data-v="'+k+'">'+k+' · '+esc(f.name)+'<small>'+esc(f.note)+'</small></button>' }).join("");
+  [].forEach.call(document.querySelectorAll("#have .opt"), function(b){ b.classList.toggle("on", b.dataset.v===S.have) });
+  document.getElementById("own").style.display = S.have==="yes" ? "block" : "none";
+}
+function list(){
+  document.getElementById("list").innerHTML = S.slides.map(function(t,i){ var b=P.slides[t];
+    return '<div class="it"><span class="n">'+(i+1)+'</span><div class="t"><b>'+esc(b.name)+'</b><small>'+esc(b.why)+'</small></div><button data-up="'+i+'">↑</button><button data-down="'+i+'">↓</button><button data-del="'+i+'">×</button></div>' }).join("");
+}
+function shape(t){
+  switch(t){
+    case "cover": return ['dk','<i class="w5"></i><i class="h"></i><i class="h w5"></i>'];
+    case "section": return ['rd','<i class="h" style="width:30%;height:22%"></i><i class="h"></i>'];
+    case "cta": return ['rd','<i class="h"></i><i class="a" style="background:#fff"></i>'];
+    case "stat": return ['dk','<i class="w5"></i><i class="h" style="height:26%;width:60%"></i><i></i>'];
+    case "steps": case "agenda": return ['','<i class="h"></i><i></i><i></i><i></i><i></i>'];
+    case "cards": return ['','<i class="h"></i><div class="g"><span></span><span></span><span></span></div>'];
+    case "table": return ['','<i class="h"></i><div class="g" style="grid-template-columns:1fr"><span></span><span></span><span></span></div>'];
+    case "chat": return ['','<i class="h"></i><i class="a" style="margin-left:auto;width:60%"></i><i style="width:60%"></i>'];
+    case "code": return ['dk','<i class="h"></i><i class="a"></i><i></i><i></i>'];
+    case "split": case "image": return ['','<i class="h"></i><div class="g" style="grid-template-columns:1fr 1fr"><span></span><span style="opacity:.5;background:var(--brand)"></span></div>'];
+    case "compare": return ['','<i class="h"></i><div class="g" style="grid-template-columns:1fr 1fr"><span></span><span style="outline:2px solid var(--brand)"></span></div>'];
+    case "timeline": return ['','<i class="h"></i><i class="a" style="width:100%;height:3%"></i><div class="g" style="grid-template-columns:repeat(4,1fr)"><span></span><span></span><span></span><span></span></div>'];
+    case "quote": return ['','<i class="h"></i><i class="h"></i><i class="w5"></i>'];
+    default: return ['','<i class="h"></i><i></i><i></i>'];
+  }
+}
+function thumbs(){
+  var f=P.formats[S.format], el=document.getElementById("thumbs");
+  el.style.setProperty("--tw", S.format==="16:9" ? "150px" : S.format==="9:16" ? "80px" : "110px");
+  el.innerHTML = S.slides.map(function(t,i){ var s=shape(t); return '<div class="th '+s[0]+'" style="aspect-ratio:'+f.w+'/'+f.h+'">'+s[1]+'<em>'+(i+1)+'</em></div>' }).join("");
+}
+function result(){
+  var p=P.presets[S.preset], name=document.getElementById("name").value.trim(), goal=document.getElementById("goal").value.trim();
+  var L=["Моя структура презентации","Задача: "+p.name+" ("+S.preset+")","Формат: "+S.format+" · "+P.formats[S.format].name];
+  if(name) L.push("Тема: "+name); if(goal) L.push("Цель: "+goal);
+  L.push("Слайды по порядку ("+S.slides.length+"):");
+  S.slides.forEach(function(t,i){ L.push("  "+(i+1)+". "+P.slides[t].name+" ["+t+"]") });
+  var own=document.getElementById("own").value.trim(); if(S.have==="yes"&&own) L.push("Мой план (дословно):", own);
+  return L.join("\n");
+}
+function json(){ return JSON.stringify({preset:S.preset, format:S.format, slides:S.slides, name:document.getElementById("name").value.trim(), goal:document.getElementById("goal").value.trim(), own_plan:S.have==="yes"?document.getElementById("own").value.trim():""}, null, 2) }
+function all(){ opts(); list(); thumbs(); document.getElementById("out").textContent=result(); store({S:S,name:document.getElementById("name").value,goal:document.getElementById("goal").value,own:document.getElementById("own").value}) }
+document.getElementById("addType").innerHTML = Object.keys(P.slides).map(function(k){ return '<option value="'+k+'">'+esc(P.slides[k].name)+' — '+esc(P.slides[k].why)+'</option>' }).join("");
+document.getElementById("addBtn").onclick=function(){ var t=document.getElementById("addType").value; var at=S.slides[S.slides.length-1]==="cta"?S.slides.length-1:S.slides.length; S.slides.splice(at,0,t); all() };
+document.getElementById("have").onclick=function(e){ var b=e.target.closest(".opt"); if(b){ S.have=b.dataset.v; all() } };
+document.getElementById("presets").onclick=function(e){ var b=e.target.closest(".opt"); if(b){ preset(b.dataset.v); all() } };
+document.getElementById("formats").onclick=function(e){ var b=e.target.closest(".opt"); if(b){ S.format=b.dataset.v; all() } };
+document.getElementById("list").onclick=function(e){ var d=e.target.dataset, i, x;
+  if(d.up!==undefined){ i=+d.up; if(i>0){ x=S.slides[i]; S.slides[i]=S.slides[i-1]; S.slides[i-1]=x } }
+  else if(d.down!==undefined){ i=+d.down; if(i<S.slides.length-1){ x=S.slides[i]; S.slides[i]=S.slides[i+1]; S.slides[i+1]=x } }
+  else if(d.del!==undefined){ if(S.slides.length>1) S.slides.splice(+d.del,1) } else return;
+  all() };
+["name","goal","own"].forEach(function(id){ document.getElementById(id).oninput=all });
+function toast(t){ var el=document.getElementById("toast"); el.textContent=t; el.classList.add("on"); setTimeout(function(){ el.classList.remove("on") },2200) }
+function copyOut(){ var t=result(); (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){ toast("Скопировано. Вставь в чат с агентом") },function(){ prompt("Скопируй и отправь агенту:", t) }) }
+function download(){ var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([json()],{type:"application/json"})); a.download="structure.json"; a.click() }
+var sv=store(); if(sv&&sv.S&&P.presets[sv.S.preset]){ S=sv.S; document.getElementById("name").value=sv.name||""; document.getElementById("goal").value=sv.goal||""; document.getElementById("own").value=sv.own||"" } else preset("lesson");
+all();
+</script>
+</body>
+</html>

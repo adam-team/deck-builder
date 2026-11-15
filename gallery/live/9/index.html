@@ -245,7 +245,15 @@ td:first-child{font:700 calc(var(--u) * 1.9) var(--fm);color:var(--brand)}
   var start = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
   cur = start; slides[cur].classList.add('on'); setFrags(cur, 0); ui();
 
+  // Автолистание (для показа и записи превью): слайды сами сменяются, элементы появляются волной без кликов.
+  function autoplay(ms) {
+    body.classList.add('auto');
+    function wave() { frags(cur).forEach(function (f, k) { setTimeout(function () { f.classList.add('shown'); }, 250 + k * 160); }); step = frags(cur).length; }
+    wave();
+    setInterval(function () { if (cur < slides.length - 1) { show(cur + 1, 1); setTimeout(wave, DUR * 0.6); } }, ms);
+  }
+  window.deckAuto = autoplay;
   var auto = parseInt(params.get('autoplay'));
-  if (auto) { body.classList.add('auto'); setInterval(function () { if (cur === slides.length - 1 && step >= frags(cur).length) return; next(); }, auto); }
+  if (auto) autoplay(auto);
 })();
 </script></body></html>

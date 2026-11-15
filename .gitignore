@@ -1,5 +1,9 @@
 node_modules/
 build/
 .DS_Store
+.vercel/
+.env
+.env.*
+!.env.example
 projects/*
 !projects/_template/

@@ -32,11 +32,11 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(f).pipe(res);
 }).listen(PORT);
 
-function finish(raw, n) { // любое видео → 960×540 mp4 + обложка
+function finish(raw, n, ss = 2.4) { // любое видео → 960×540 mp4 + обложка
   const mp4 = path.join(MEDIA, `${n}.mp4`);
   execFileSync('ffmpeg', ['-y', '-v', 'error', '-i', raw, '-t', String(SECONDS), '-vf', 'scale=960:540:force_original_aspect_ratio=decrease,pad=960:540:(ow-iw)/2:(oh-ih)/2:color=0x0b0b0c,fps=30',
     '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '30', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-an', mp4]);
-  execFileSync('ffmpeg', ['-y', '-v', 'error', '-ss', '0.8', '-i', mp4, '-frames:v', '1', '-vf', 'scale=640:360', '-q:v', '4', path.join(MEDIA, `${n}.jpg`)]);
+  execFileSync('ffmpeg', ['-y', '-v', 'error', '-ss', String(ss), '-i', mp4, '-frames:v', '1', '-vf', 'scale=640:360', '-q:v', '4', path.join(MEDIA, `${n}.jpg`)]);
 }
 
 function pdfShow(d) { // свои PDF: страницы → слайд-шоу с плавной сменой
@@ -51,7 +51,7 @@ function pdfShow(d) { // свои PDF: страницы → слайд-шоу с
   for (let i = 1; i < pages.length; i++) { fc += `;[${last}][v${i}]xfade=transition=${['smoothleft', 'fade', 'circleopen', 'slideup'][i % 4]}:duration=${fade}:offset=${(per * i).toFixed(2)}[x${i}]`; last = `x${i}`; }
   const raw = path.join(tmp, 'raw.mp4');
   execFileSync('ffmpeg', [...args, '-filter_complex', fc, '-map', `[${last}]`, '-c:v', 'libx264', '-preset', 'veryfast', '-pix_fmt', 'yuv420p', raw]);
-  finish(raw, d.n);
+  finish(raw, d.n, 0.8);
 }
 
 function target(d) {

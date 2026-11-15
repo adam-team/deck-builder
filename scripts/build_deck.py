@@ -243,6 +243,8 @@ def main(a):
         fmt = opt("--format", pr["format"])
         tr = opt("--transition", d.get("transition", "fade"))
         slides = [demo_slide(k, pr["demo"], i) for i, k in enumerate(pr["slides"])]
+        st = d.get("style", {})
+        slides[0]["theme"] = st.get("cover") or ("dark" if d.get("dark") or st.get("route") else "light")
         page = render(d, slides, fmt, tr, d.get("appear", "up"), pr["demo"]["who"], "@kuraylife" if d.get("author") == "Куралай" else "", d["name"])
         out = opt("--out", os.path.join(ROOT, "gallery", "live", str(d["n"])))
         os.makedirs(out, exist_ok=True)
@@ -261,7 +263,7 @@ def main(a):
     slides, missing = [], []
     for i, s in enumerate(cfg["slides"]):
         demo = demo_slide(s["type"], pr["demo"], i)
-        miss = [k for k in demo if k not in s and k not in ("type", "theme")]
+        miss = [k for k in demo if k not in s and k not in ("type", "theme", "steps")]
         if miss:
             missing.append(f"слайд {i + 1} ({s['type']}): {', '.join(miss)}")
         slides.append(dict(demo, **s))
